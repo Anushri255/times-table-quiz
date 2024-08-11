@@ -113,16 +113,18 @@
         questionElement.textContent = `What is ${num1} x ${num2}?`;
         answerInput.value = '';
         answerInput.focus();
-        resetTimer();
+        resetTimer(); // Reset the timer every time a new question is generated
     }
 
     function resetTimer() {
-        clearInterval(timerInterval);
-        timerElement.textContent = timeLeft;
+        clearInterval(timerInterval); // Stop any existing timer
+        timeLeft = Math.max(2, timeLeft); // Ensure timeLeft is reset appropriately
+        timerElement.textContent = timeLeft; // Reset the displayed timer value
         timerInterval = setInterval(() => {
-            timeLeft--;
-            timerElement.textContent = timeLeft;
-            if (timeLeft === 0) {
+            if (timeLeft > 0) {
+                timeLeft--;
+                timerElement.textContent = timeLeft;
+            } else {
                 clearInterval(timerInterval);
                 feedbackElement.textContent = 'Time\'s up!';
                 setTimeout(generateQuestion, 1000);
@@ -132,6 +134,7 @@
 
     submitButton.addEventListener('click', () => {
         const userAnswer = parseInt(answerInput.value);
+        clearInterval(timerInterval); // Stop the timer when an answer is submitted
         if (userAnswer === correctAnswer) {
             feedbackElement.textContent = 'Correct!';
             score++;
