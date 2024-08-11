@@ -92,5 +92,62 @@
         <p id="timer">Time left: <span id="timeLeft">10</span> seconds</p>
     </div>
 </body>
+<script>
+    const questionElement = document.getElementById('question');
+    const answerInput = document.getElementById('answerInput');
+    const submitButton = document.getElementById('submitAnswer');
+    const feedbackElement = document.getElementById('feedback');
+    const timerElement = document.getElementById('timeLeft');
+    const scoreElement = document.getElementById('score');
+
+    let correctAnswer;
+    let score = 0;
+    let timeLeft = 10;
+    let questionsAnswered = 0;
+    let timerInterval;
+
+    function generateQuestion() {
+        const num1 = Math.floor(Math.random() * 12) + 1;
+        const num2 = Math.floor(Math.random() * 12) + 1;
+        correctAnswer = num1 * num2;
+        questionElement.textContent = `What is ${num1} x ${num2}?`;
+        answerInput.value = '';
+        answerInput.focus();
+        resetTimer();
+    }
+
+    function resetTimer() {
+        clearInterval(timerInterval);
+        timerElement.textContent = timeLeft;
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            timerElement.textContent = timeLeft;
+            if (timeLeft === 0) {
+                clearInterval(timerInterval);
+                feedbackElement.textContent = 'Time\'s up!';
+                setTimeout(generateQuestion, 1000);
+            }
+        }, 1000);
+    }
+
+    submitButton.addEventListener('click', () => {
+        const userAnswer = parseInt(answerInput.value);
+        if (userAnswer === correctAnswer) {
+            feedbackElement.textContent = 'Correct!';
+            score++;
+            questionsAnswered++;
+            if (questionsAnswered % 4 === 0) {
+                timeLeft = Math.max(2, timeLeft - 2);  // Decrease time left after every 4 correct answers
+            }
+        } else {
+            feedbackElement.textContent = 'Wrong answer!';
+        }
+        scoreElement.textContent = `Score: ${score}`;
+        setTimeout(generateQuestion, 1000);
+    });
+
+    generateQuestion();
+
+</script>
 
 </html>
